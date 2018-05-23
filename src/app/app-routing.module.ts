@@ -1,7 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -12,7 +11,6 @@ import { RecipesItemComponent } from './recipes/recipes-list/recipes-item/recipe
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
 import {DropdownDirective} from './shared/dropdown.directive';
-import { AppRoutingModule } from './app-routing.module';
 
 
 import { ShoppingListService } from './services/shoppinglist.service';
@@ -20,28 +18,21 @@ import { RecipeService } from './services/recipe.service';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 
+const appRoutes: Routes = [
+	{ path: '', redirectTo: '/recipes', pathMatch: 'full' },
+	{ path: 'recipes', component: RecipesComponent, children: [
+		{ path: '', component: RecipeStartComponent },
+		{ path: 'new', component: RecipeEditComponent }, 
+		// put dynamic param at the end the allow angular parse tree correctly
+		{ path: ':id', component: RecipesDetailComponent },
+		{ path: ':id/edit', component: RecipeEditComponent },
+	] },
+	{ path: 'shopping-list', component: ShoppingListComponent }
+]
+
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    RecipesComponent,
-    RecipesListComponent,
-    RecipesDetailComponent,
-    RecipesItemComponent,
-    ShoppingListComponent,
-    ShoppingEditComponent,
-    DropdownDirective,
-    RecipeStartComponent,
-    RecipeEditComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpModule, 
-    ReactiveFormsModule
-  ],
-  providers: [ShoppingListService, RecipeService],
-  bootstrap: [AppComponent]
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule]
 })
-export class AppModule { }
+export class AppRoutingModule { }
